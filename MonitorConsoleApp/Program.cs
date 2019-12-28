@@ -81,8 +81,8 @@ namespace MonitorConsoleApp
             }
             finally
             {
-                Console.WriteLine(client.InstrumentationKey);
-                Console.WriteLine(client.IsEnabled());
+                //Console.WriteLine(client.InstrumentationKey);
+                //Console.WriteLine(client.IsEnabled());
                 client.TrackAvailability(telemetry);
                 Console.WriteLine($"Telemetry sent for URL: '{url}'");
             }
