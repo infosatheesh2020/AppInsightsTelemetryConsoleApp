@@ -10,9 +10,9 @@ namespace MonitorConsoleApp
     {
         private static HttpClient _httpClient = new HttpClient();
         private static TelemetryConfiguration configuration;
-        private static TelemetryClient client;
+        public static TelemetryClient client;
 
-        private static int Main(string[] args)
+        public static int Main(string[] args)
         {
             // Test if input arguments were supplied.
             if (args.Length == 0)
@@ -30,8 +30,9 @@ namespace MonitorConsoleApp
 
             Console.WriteLine("Telemetry will be sent to IKEY: {0}", Ikey);
 
-            configuration = new TelemetryConfiguration { InstrumentationKey = Ikey };
+            configuration = new TelemetryConfiguration();
             client = new TelemetryClient(configuration);
+            client.InstrumentationKey = Ikey;
 
             Console.WriteLine("Executing Health Check....");
 
@@ -45,7 +46,7 @@ namespace MonitorConsoleApp
             }
 
             file.Close();
-            System.Console.WriteLine("There were {0} lines.", counter);
+            System.Console.WriteLine("Finished Sending telemetry for {0} URLs.", counter);
 
             Console.WriteLine($"Run(): Completed..");
             return 0;
@@ -81,8 +82,6 @@ namespace MonitorConsoleApp
             }
             finally
             {
-                //Console.WriteLine(client.InstrumentationKey);
-                //Console.WriteLine(client.IsEnabled());
                 client.TrackAvailability(telemetry);
                 Console.WriteLine($"Telemetry sent for URL: '{url}'");
             }
