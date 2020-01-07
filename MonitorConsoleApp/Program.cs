@@ -3,6 +3,7 @@ using System.Net.Http;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.DataContracts;
+using System.Threading.Tasks;
 
 namespace MonitorConsoleApp
 {
@@ -84,6 +85,8 @@ namespace MonitorConsoleApp
             {
                 client.TrackAvailability(telemetry);
                 Console.WriteLine($"Telemetry sent for URL: '{url}'");
+                client.Flush();
+                Task.Delay(1000).Wait();
             }
             return response;
         }
