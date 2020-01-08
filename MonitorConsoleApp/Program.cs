@@ -66,14 +66,15 @@ namespace MonitorConsoleApp
                 if (response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"hitUrl(): Successfully hit URL: '{url}'");
+                    telemetry.Success = response.IsSuccessStatusCode;
+                    telemetry.Message = response.ReasonPhrase;
                 }
                 else
                 {
                     Console.WriteLine($"hitUrl(): Failed to hit URL: '{url}'. Response: {(int)response.StatusCode + " : " + response.ReasonPhrase}");
+                    telemetry.Success = false;
+                    telemetry.Message = "URL not reachable";
                 }
-
-                telemetry.Success = response.IsSuccessStatusCode;
-                telemetry.Message = response.ReasonPhrase;
             }
             catch (Exception ex)
             {
