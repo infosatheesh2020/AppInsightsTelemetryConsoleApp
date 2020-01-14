@@ -4,6 +4,8 @@ using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.DataContracts;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MonitorConsoleApp
 {
@@ -18,22 +20,20 @@ namespace MonitorConsoleApp
             // Test if input arguments were supplied.
             if (args.Length == 0)
             {
-                Console.WriteLine("Please enter AppInsights Instrumentation key and file containing URLs to monitor as arguments.");
-                Console.WriteLine("Usage: AppInsightsConsoleApp.exe  '0c329c27-cf39-4c15-9623-5b8ce4b232bb' 'c:\\test.txt'");
+                Console.WriteLine("Please enter file containing IKEY tab separated by URLs to monitor as arguments.");
+                Console.WriteLine("Usage: MonitorConsoleApp.exe 'c:\\test.txt'");
+                Console.WriteLine("     0c329c27-cf39-4c15-9623-5b8ce4b232bb    https://www.contoso.com");
                 return 1;
             }
 
-            string Ikey = args[0];
-            string filepath = args[1];
+            string Ikey, url;
+            string filepath = args[0];
 
             int counter = 0;
             string line;
 
-            Console.WriteLine("Telemetry will be sent to IKEY: {0}", Ikey);
-
             configuration = new TelemetryConfiguration();
             client = new TelemetryClient(configuration);
-            client.InstrumentationKey = Ikey;
 
             Console.WriteLine("Executing Health Check....");
 
@@ -41,8 +41,14 @@ namespace MonitorConsoleApp
             System.IO.StreamReader file = new System.IO.StreamReader(@filepath);
             while ((line = file.ReadLine()) != null)
             {
-                Console.WriteLine($"Run(): About to hit URL: '{line}'");
-                _ = hitUrl(line);
+                List<string> parts = line.Split((char[])null, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToList();
+                Ikey = parts[0];
+                url = parts[1];
+
+                client.InstrumentationKey = Ikey;
+                Console.WriteLine("Telemetry will be sent to IKEY: {0}", Ikey);
+                //Console.WriteLine($"Run(): About to hit URL: '{url}'");
+                _ = hitUrl(url);
                 counter++;
             }
 
